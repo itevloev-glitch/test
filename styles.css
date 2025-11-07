@@ -77,6 +77,12 @@ img {
   background: rgba(45, 183, 163, 0.25);
 }
 
+.nav-links a.active {
+  background: var(--accent);
+  color: var(--text-light);
+  box-shadow: 0 12px 30px rgba(45, 183, 163, 0.35);
+}
+
 .nav-toggle {
   display: none;
   flex-direction: column;
@@ -103,8 +109,8 @@ img {
   position: relative;
   min-height: 100vh;
   padding: 140px 5% 120px;
-  background: linear-gradient(135deg, rgba(12, 27, 42, 0.85), rgba(12, 27, 42, 0.4)),
-    url("https://images.unsplash.com/photo-1580281658629-898d612d236d?auto=format&fit=crop&w=1600&q=80")
+  background: linear-gradient(135deg, rgba(12, 27, 42, 0.88), rgba(12, 27, 42, 0.45)),
+    url("https://images.unsplash.com/photo-1526256262350-7da7584cf5eb?auto=format&fit=crop&w=1600&q=80")
       center/cover no-repeat;
   color: var(--text-light);
   display: flex;
@@ -417,7 +423,8 @@ main section {
 }
 
 .form-row input,
-.form-row select {
+.form-row select,
+.form-row textarea {
   padding: 14px;
   border-radius: 12px;
   border: 1px solid rgba(12, 27, 42, 0.12);
@@ -426,10 +433,16 @@ main section {
 }
 
 .form-row input:focus,
-.form-row select:focus {
+.form-row select:focus,
+.form-row textarea:focus {
   border-color: var(--accent);
   box-shadow: 0 0 0 4px rgba(45, 183, 163, 0.18);
   outline: none;
+}
+
+.form-row textarea {
+  min-height: 140px;
+  resize: vertical;
 }
 
 .form-note {
