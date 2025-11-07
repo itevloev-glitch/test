@@ -77,27 +77,50 @@
           </p>
         </div>
         <div class="about-grid">
-          <article class="about-card">
-            <h3>Фокус на семье</h3>
+          <article
+            class="about-card"
+            role="button"
+            tabindex="0"
+            data-detail-type="doctor"
+            data-detail-id="sabirova"
+            aria-label="Подробнее о Альбине Сабировой"
+          >
+            <h3>Альбина Сабирова</h3>
             <p>
-              Команды педиатров, терапевтов и узких специалистов работают вместе,
-              чтобы сопровождать каждую семью от рождения ребёнка до заботы о
-              старших родственниках.
+              Главный врач и семейный терапевт. Курирует долгосрочные программы
+              наблюдения и помогает семьям выстраивать привычки здоровья.
             </p>
+            <span class="card-cta">Узнать подробнее</span>
           </article>
-          <article class="about-card">
-            <h3>Комфортная атмосфера</h3>
+          <article
+            class="about-card"
+            role="button"
+            tabindex="0"
+            data-detail-type="doctor"
+            data-detail-id="khasanov"
+            aria-label="Подробнее о Ильнаре Хасанове"
+          >
+            <h3>Ильнар Хасанов</h3>
             <p>
-              Отдельные зоны ожидания для детей и взрослых, игровые пространства и
-              уютные кабинеты помогают чувствовать себя спокойно и уверенно.
+              Педиатр-неонатолог. Сопровождает малышей с рождения, обучает
+              родителей уходу и адаптации, проводит диагностику в одно посещение.
             </p>
+            <span class="card-cta">Узнать подробнее</span>
           </article>
-          <article class="about-card">
-            <h3>Продуманная профилактика</h3>
+          <article
+            class="about-card"
+            role="button"
+            tabindex="0"
+            data-detail-type="doctor"
+            data-detail-id="vavilova"
+            aria-label="Подробнее о Ольге Вавиловой"
+          >
+            <h3>Ольга Вавилова</h3>
             <p>
-              Индивидуальные планы наблюдения, напоминания о приёмах и единая
-              электронная карта семьи помогают не упустить важные обследования.
+              Акушер-гинеколог. Ведёт программы подготовки к беременности и
+              восстановления после родов, работает в паре с доулой и психологом.
             </p>
+            <span class="card-cta">Узнать подробнее</span>
           </article>
         </div>
       </section>
@@ -210,27 +233,50 @@
           </p>
         </div>
         <div class="technology-grid">
-          <article class="technology-card">
+          <article
+            class="technology-card"
+            role="button"
+            tabindex="0"
+            data-detail-type="program"
+            data-detail-id="start"
+            aria-label="Подробнее о программе Здоровый старт"
+          >
             <h3>«Здоровый старт»</h3>
             <p>
-              Годовое наблюдение малыша: педиатр и узкие специалисты, вакцинация,
-              чек-листы развития, сопровождение мамы консультантом по грудному
-              вскармливанию.
+              Годовое наблюдение малыша: педиатр, вакцинация и поддержка мамы с
+              первых дней жизни ребёнка.
             </p>
+            <span class="card-cta">Подробнее о программе</span>
           </article>
-          <article class="technology-card">
+          <article
+            class="technology-card"
+            role="button"
+            tabindex="0"
+            data-detail-type="program"
+            data-detail-id="heart"
+            aria-label="Подробнее о программе Сердце семьи"
+          >
             <h3>«Сердце семьи»</h3>
             <p>
-              Программа для родителей: кардиолог, терапевт, лабораторный скрининг,
-              контроль давления и персональный план физической активности.
+              Комплексная профилактика и контроль здоровья родителей под
+              наблюдением кардиолога и терапевта.
             </p>
+            <span class="card-cta">Подробнее о программе</span>
           </article>
-          <article class="technology-card">
+          <article
+            class="technology-card"
+            role="button"
+            tabindex="0"
+            data-detail-type="program"
+            data-detail-id="care"
+            aria-label="Подробнее о программе Забота о старших"
+          >
             <h3>«Забота о старших»</h3>
             <p>
-              Домашние визиты, телемедицина, контроль хронических состояний и
-              координация лечения с профильными специалистами без очередей.
+              Домашние визиты, телемедицина и контроль хронических состояний без
+              очередей и тревоги.
             </p>
+            <span class="card-cta">Подробнее о программе</span>
           </article>
         </div>
       </section>
@@ -362,6 +408,69 @@
         </div>
       </section>
     </main>
+
+    <div class="detail-overlay" aria-hidden="true">
+      <div class="detail-modal" role="dialog" aria-modal="true" aria-labelledby="detail-title">
+        <button class="detail-close" type="button" aria-label="Закрыть подробности">
+          <span aria-hidden="true">×</span>
+        </button>
+        <div class="detail-body">
+          <div class="detail-media">
+            <img src="" alt="" class="detail-image" />
+          </div>
+          <div class="detail-info">
+            <div class="detail-heading">
+              <h3 id="detail-title" class="detail-title"></h3>
+              <p class="detail-subtitle"></p>
+            </div>
+            <p class="detail-description"></p>
+            <ul class="detail-highlights"></ul>
+            <div class="detail-schedule">
+              <h4>Расписание приёма</h4>
+              <ul class="schedule-list"></ul>
+            </div>
+            <div class="detail-program">
+              <h4>Что входит в программу</h4>
+              <ul class="program-list"></ul>
+              <p class="program-duration"></p>
+            </div>
+          </div>
+        </div>
+        <div class="detail-reviews">
+          <h4>Отзывы пациентов</h4>
+          <ul class="detail-reviews-list"></ul>
+          <p class="detail-no-reviews">Пока нет отзывов. Будьте первым!</p>
+          <form class="detail-review-form">
+            <div class="form-row inline">
+              <label for="review-name">Имя</label>
+              <input id="review-name" name="review-name" type="text" placeholder="Ваше имя" required />
+            </div>
+            <div class="form-row inline">
+              <label for="review-rating">Оценка</label>
+              <select id="review-rating" name="review-rating">
+                <option value="5" selected>5</option>
+                <option value="4">4</option>
+                <option value="3">3</option>
+                <option value="2">2</option>
+                <option value="1">1</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label for="review-message">Комментарий</label>
+              <textarea
+                id="review-message"
+                name="review-message"
+                rows="3"
+                placeholder="Расскажите о своём опыте"
+                required
+              ></textarea>
+            </div>
+            <button type="submit" class="btn primary">Оставить отзыв</button>
+          </form>
+          <p class="detail-review-success" role="status" aria-live="polite"></p>
+        </div>
+      </div>
+    </div>
 
     <footer class="footer">
       <div class="footer-top">
