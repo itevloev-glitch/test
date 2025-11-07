@@ -7,6 +7,7 @@ const prevBtn = document.querySelector('.slider-btn.prev');
 const nextBtn = document.querySelector('.slider-btn.next');
 let currentSlide = 0;
 let autoSlideInterval;
+let toastTimer;
 
 function setActiveSlide(index) {
   slides.forEach((slide, i) => {
@@ -71,44 +72,80 @@ if (slider && slides.length > 0) {
   startAutoSlide();
 }
 
-const observer = new IntersectionObserver(
-  (entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        observer.unobserve(entry.target);
-      }
-    });
-  },
-  {
-    threshold: 0.2,
-  }
+const revealElements = document.querySelectorAll(
+  '.about-card, .service-card, .expert-card, .technology-card'
 );
 
-document.querySelectorAll('.about-card, .service-card, .expert-card, .technology-card').forEach((card) => {
-  card.classList.add('fade-in');
-  observer.observe(card);
-});
+if ('IntersectionObserver' in window) {
+  const revealObserver = new IntersectionObserver(
+    (entries, observerInstance) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observerInstance.unobserve(entry.target);
+        }
+      });
+    },
+    {
+      threshold: 0.2,
+    }
+  );
+
+  revealElements.forEach((card) => {
+    card.classList.add('fade-in');
+    revealObserver.observe(card);
+  });
+} else {
+  revealElements.forEach((card) => {
+    card.classList.add('fade-in', 'visible');
+  });
+}
 
 const observedSections = navItems
-  .map((link) => document.querySelector(link.getAttribute('href')))
+  .map((link) => {
+    const href = link.getAttribute('href');
+    if (!href || !href.startsWith('#')) return null;
+    return document.querySelector(href);
+  })
   .filter((section) => section instanceof HTMLElement);
 
-const navObserver = new IntersectionObserver(
-  (entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        setActiveNav(entry.target.id);
+if ('IntersectionObserver' in window) {
+  const navObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setActiveNav(entry.target.id);
+        }
+      });
+    },
+    {
+      threshold: 0.45,
+      rootMargin: '-20% 0px -40% 0px',
+    }
+  );
+
+  observedSections.forEach((section) => navObserver.observe(section));
+} else {
+  const updateActiveNavByScroll = () => {
+    const offset = window.innerHeight * 0.35;
+    const scrollPosition = window.scrollY + offset;
+    let currentId = observedSections[0]?.id;
+
+    observedSections.forEach((section) => {
+      const sectionTop = window.scrollY + section.getBoundingClientRect().top;
+      if (sectionTop <= scrollPosition) {
+        currentId = section.id;
       }
     });
-  },
-  {
-    threshold: 0.45,
-    rootMargin: '-20% 0px -40% 0px',
-  }
-);
 
-observedSections.forEach((section) => navObserver.observe(section));
+    if (currentId) {
+      setActiveNav(currentId);
+    }
+  };
+
+  window.addEventListener('scroll', updateActiveNavByScroll, { passive: true });
+  updateActiveNavByScroll();
+}
 
 const initialHash = window.location.hash.replace('#', '');
 const initialSection = observedSections.find((section) => section.id === initialHash);
@@ -118,3 +155,38 @@ if (initialSection) {
 } else if (observedSections.length > 0) {
   setActiveNav(observedSections[0].id);
 }
+
+const bookingForm = document.querySelector('.booking-form');
+const formToast = document.querySelector('.form-toast');
+
+if (bookingForm) {
+  bookingForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const targetForm = event.currentTarget;
+
+    if (targetForm instanceof HTMLFormElement) {
+      targetForm.reset();
+    }
+
+    if (formToast) {
+      formToast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = window.setTimeout(() => {
+        formToast.classList.remove('show');
+      }, 2600);
+    }
+  });
+}
+
+const cornerLights = document.querySelectorAll('.corner-light');
+
+cornerLights.forEach((light) => {
+  const handleEnter = () => light.classList.add('active');
+  const handleLeave = () => light.classList.remove('active');
+
+  light.addEventListener('mouseenter', handleEnter);
+  light.addEventListener('mouseleave', handleLeave);
+  light.addEventListener('touchstart', handleEnter, { passive: true });
+  light.addEventListener('touchend', handleLeave);
+  light.addEventListener('touchcancel', handleLeave);
+});

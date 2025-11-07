@@ -20,6 +20,12 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
+    <div class="corner-light left" aria-hidden="true">
+      <span class="light-core"></span>
+    </div>
+    <div class="corner-light right" aria-hidden="true">
+      <span class="light-core"></span>
+    </div>
     <header class="hero" id="home">
       <nav class="navbar">
         <div class="logo">Семья</div>
@@ -309,6 +315,9 @@
             <button type="submit" class="btn primary">Отправить заявку</button>
             <p class="form-note">Нажимая кнопку, вы соглашаетесь с политикой конфиденциальности и обработкой персональных данных.</p>
           </form>
+          <div class="form-toast" role="status" aria-live="polite">
+            Спасибо! Ваше обращение отправлено.
+          </div>
         </div>
       </section>
 
