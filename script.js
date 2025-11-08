@@ -5,6 +5,12 @@ const slider = document.querySelector('.reviews-slider');
 const slides = document.querySelectorAll('.review-card');
 const prevBtn = document.querySelector('.slider-btn.prev');
 const nextBtn = document.querySelector('.slider-btn.next');
+const scrollProgressBar = document.querySelector('.scroll-progress .progress-bar');
+const parallaxSections = document.querySelectorAll('[data-parallax]');
+const magneticButtons = document.querySelectorAll('.btn.magnetic');
+const counterElements = document.querySelectorAll('[data-counter]');
+const navSnakeCanvas = document.querySelector('.nav-snake');
+const interactiveCards = document.querySelectorAll('.about-card, .technology-card');
 let currentSlide = 0;
 let autoSlideInterval;
 let toastTimer;
@@ -33,6 +39,110 @@ function handleNavToggle() {
 
 navToggle?.addEventListener('click', handleNavToggle);
 
+if (scrollProgressBar) {
+  const updateProgress = () => {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = docHeight > 0 ? scrollTop / docHeight : 0;
+    scrollProgressBar.style.transform = `scaleX(${Math.min(Math.max(progress, 0), 1)})`;
+  };
+
+  window.addEventListener('scroll', updateProgress, { passive: true });
+  window.addEventListener('resize', updateProgress);
+  updateProgress();
+}
+
+const updateParallax = () => {
+  parallaxSections.forEach((section) => {
+    const rect = section.getBoundingClientRect();
+    const offset = rect.top + rect.height / 2 - window.innerHeight / 2;
+    const progress = Math.max(Math.min(offset / window.innerHeight, 1), -1);
+    section.style.setProperty('--parallax-offset', progress.toFixed(4));
+  });
+};
+
+if (parallaxSections.length > 0) {
+  window.addEventListener('scroll', updateParallax, { passive: true });
+  window.addEventListener('resize', updateParallax);
+  updateParallax();
+}
+
+if (magneticButtons.length > 0) {
+  magneticButtons.forEach((button) => {
+    const strength = Number(button.dataset.magneticStrength) || 18;
+    const resetMagnet = () => {
+      button.style.removeProperty('--magnet-x');
+      button.style.removeProperty('--magnet-y');
+    };
+
+    button.addEventListener('pointermove', (event) => {
+      const rect = button.getBoundingClientRect();
+      const relativeX = event.clientX - rect.left - rect.width / 2;
+      const relativeY = event.clientY - rect.top - rect.height / 2;
+      button.style.setProperty('--magnet-x', `${relativeX / strength}px`);
+      button.style.setProperty('--magnet-y', `${relativeY / strength}px`);
+    });
+
+    button.addEventListener('pointerdown', (event) => {
+      if (event.pointerType === 'touch') {
+        resetMagnet();
+      }
+    });
+
+    button.addEventListener('pointerleave', resetMagnet);
+    button.addEventListener('blur', resetMagnet);
+  });
+}
+
+if (counterElements.length > 0 && 'IntersectionObserver' in window) {
+  const animatedCounters = new WeakSet();
+
+  const animateValue = (element) => {
+    if (animatedCounters.has(element)) return;
+    animatedCounters.add(element);
+
+    const target = Number(element.dataset.counter) || 0;
+    const suffix = element.dataset.suffix || '';
+    const duration = target > 2000 ? 2000 : 1400;
+    const startTime = performance.now();
+
+    const update = (now) => {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = progress < 0.5 ? 4 * progress ** 3 : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+      const current = Math.round(target * eased);
+      element.textContent = `${current.toLocaleString('ru-RU')}${suffix}`;
+
+      if (progress < 1) {
+        requestAnimationFrame(update);
+      }
+    };
+
+    requestAnimationFrame(update);
+  };
+
+  const counterObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          animateValue(entry.target);
+        }
+      });
+    },
+    { threshold: 0.6 }
+  );
+
+  counterElements.forEach((counter) => counterObserver.observe(counter));
+}
+
+if (counterElements.length > 0 && !('IntersectionObserver' in window)) {
+  counterElements.forEach((counter) => {
+    const target = Number(counter.dataset.counter) || 0;
+    const suffix = counter.dataset.suffix || '';
+    counter.textContent = `${target.toLocaleString('ru-RU')}${suffix}`;
+  });
+}
+
 function setActiveNav(id) {
   navItems.forEach((link) => {
     const targetId = link.getAttribute('href');
@@ -56,6 +166,144 @@ navItems.forEach((link) => {
     }
   });
 });
+
+if (navSnakeCanvas instanceof HTMLCanvasElement) {
+  const navBar = navSnakeCanvas.closest('.navbar');
+  const context = navSnakeCanvas.getContext('2d');
+
+  if (navBar && context) {
+    const segmentCount = 22;
+    const segments = [];
+    let pointer = { x: 0, y: 0 };
+    let target = { x: 0, y: 0 };
+    let rest = { x: 0, y: 0 };
+    let visibility = 0;
+    let targetVisibility = 0;
+
+    const initializeSegments = () => {
+      segments.length = 0;
+      for (let i = 0; i < segmentCount; i += 1) {
+        segments.push({ x: rest.x, y: rest.y });
+      }
+    };
+
+    const resizeCanvas = () => {
+      const rect = navBar.getBoundingClientRect();
+      const ratio = window.devicePixelRatio || 1;
+      navSnakeCanvas.width = rect.width * ratio;
+      navSnakeCanvas.height = rect.height * ratio;
+      navSnakeCanvas.style.width = `${rect.width}px`;
+      navSnakeCanvas.style.height = `${rect.height}px`;
+      context.setTransform(ratio, 0, 0, ratio, 0, 0);
+      rest = { x: rect.width / 2, y: rect.height / 2 };
+      pointer = { ...rest };
+      target = { ...rest };
+      initializeSegments();
+    };
+
+    const drawSnake = () => {
+      context.clearRect(0, 0, navSnakeCanvas.width, navSnakeCanvas.height);
+
+      if (visibility < 0.01) {
+        return;
+      }
+
+      context.globalAlpha = visibility;
+      context.lineCap = 'round';
+      context.lineJoin = 'round';
+      context.lineWidth = 6;
+
+      const gradient = context.createLinearGradient(0, 0, navSnakeCanvas.width, 0);
+      gradient.addColorStop(0, 'rgba(69, 255, 210, 0.85)');
+      gradient.addColorStop(0.5, 'rgba(69, 160, 255, 0.9)');
+      gradient.addColorStop(1, 'rgba(130, 240, 255, 0.85)');
+      context.strokeStyle = gradient;
+
+      context.beginPath();
+      context.moveTo(segments[0].x, segments[0].y);
+
+      for (let i = 1; i < segments.length; i += 1) {
+        const previous = segments[i - 1];
+        const current = segments[i];
+        const midX = (previous.x + current.x) / 2;
+        const midY = (previous.y + current.y) / 2;
+        context.quadraticCurveTo(previous.x, previous.y, midX, midY);
+      }
+
+      context.stroke();
+      context.globalAlpha = 1;
+    };
+
+    const animate = () => {
+      pointer.x += (target.x - pointer.x) * 0.22;
+      pointer.y += (target.y - pointer.y) * 0.22;
+
+      segments[0].x += (pointer.x - segments[0].x) * 0.28;
+      segments[0].y += (pointer.y - segments[0].y) * 0.28;
+
+      for (let i = 1; i < segments.length; i += 1) {
+        const previous = segments[i - 1];
+        const current = segments[i];
+        current.x += (previous.x - current.x) * 0.38;
+        current.y += (previous.y - current.y) * 0.38;
+      }
+
+      visibility += (targetVisibility - visibility) * 0.08;
+
+      drawSnake();
+      requestAnimationFrame(animate);
+    };
+
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+    requestAnimationFrame(animate);
+
+    const updateTarget = (event) => {
+      const rect = navSnakeCanvas.getBoundingClientRect();
+      target = {
+        x: event.clientX - rect.left,
+        y: event.clientY - rect.top,
+      };
+      targetVisibility = 1;
+    };
+
+    navBar.addEventListener('pointerenter', updateTarget);
+    navBar.addEventListener('pointermove', updateTarget);
+    navBar.addEventListener('pointerleave', () => {
+      target = { ...rest };
+      targetVisibility = 0.18;
+    });
+  }
+}
+
+if (interactiveCards.length > 0) {
+  const resetCard = (card) => {
+    card.style.removeProperty('--tilt-x');
+    card.style.removeProperty('--tilt-y');
+    card.style.removeProperty('--pointer-x');
+    card.style.removeProperty('--pointer-y');
+    card.style.removeProperty('--lift');
+  };
+
+  interactiveCards.forEach((card) => {
+    card.addEventListener('pointermove', (event) => {
+      const rect = card.getBoundingClientRect();
+      const xRatio = (event.clientX - rect.left) / rect.width;
+      const yRatio = (event.clientY - rect.top) / rect.height;
+      const tiltX = (0.5 - yRatio) * 14;
+      const tiltY = (xRatio - 0.5) * 14;
+
+      card.style.setProperty('--tilt-x', tiltX.toFixed(3));
+      card.style.setProperty('--tilt-y', tiltY.toFixed(3));
+      card.style.setProperty('--pointer-x', `${xRatio * 100}%`);
+      card.style.setProperty('--pointer-y', `${yRatio * 100}%`);
+      card.style.setProperty('--lift', '-12px');
+    });
+
+    card.addEventListener('pointerleave', () => resetCard(card));
+    card.addEventListener('blur', () => resetCard(card));
+  });
+}
 
 prevBtn?.addEventListener('click', () => {
   showNextSlide(-1);

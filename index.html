@@ -20,6 +20,9 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
+    <div class="scroll-progress" aria-hidden="true">
+      <span class="progress-bar"></span>
+    </div>
     <div class="corner-light left" aria-hidden="true">
       <span class="light-core"></span>
     </div>
@@ -34,6 +37,7 @@
           <span></span>
           <span></span>
         </button>
+        <canvas class="nav-snake" width="320" height="80" aria-hidden="true"></canvas>
         <ul class="nav-links">
           <li><a href="#home">Главная</a></li>
           <li><a href="#about">О клинике</a></li>
@@ -58,15 +62,64 @@
           имени.
         </p>
         <div class="hero-actions">
-          <a class="btn primary" href="#feedback">Записаться на приём</a>
-          <a class="btn secondary" href="#services">Направления клиники</a>
+          <a class="btn primary magnetic" href="#feedback">Записаться на приём</a>
+          <a class="btn secondary magnetic" href="#services">Направления клиники</a>
+        </div>
+      </div>
+      <div class="hero-visuals" aria-hidden="true">
+        <div class="hero-procedure">
+          <svg viewBox="0 0 360 220" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="bedGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="var(--gradient-start)" />
+                <stop offset="100%" stop-color="var(--gradient-end)" />
+              </linearGradient>
+            </defs>
+            <rect class="bed" x="30" y="140" width="300" height="28" rx="14" />
+            <rect class="bed-shadow" x="30" y="168" width="300" height="14" rx="7" />
+            <g class="patient">
+              <rect class="pillow" x="220" y="110" width="72" height="36" rx="16" />
+              <rect class="torso" x="120" y="118" width="120" height="44" rx="20" />
+              <rect class="legs" x="80" y="126" width="92" height="40" rx="18" />
+              <circle class="head" cx="248" cy="110" r="18" />
+              <path class="arm" d="M210 128 Q236 140 258 136" />
+            </g>
+            <g class="monitor">
+              <rect class="monitor-body" x="38" y="58" width="90" height="60" rx="12" />
+              <path class="monitor-line" d="M48 88 Q60 90 70 82 T94 92 T118 84" />
+              <rect class="monitor-stand" x="78" y="118" width="12" height="28" rx="4" />
+            </g>
+          </svg>
+        </div>
+        <div class="floating-symbols">
+          <span class="symbol cross"></span>
+          <span class="symbol drop"></span>
+          <span class="symbol dna"></span>
+          <span class="symbol pulse"></span>
         </div>
       </div>
       <div class="hero-overlay"></div>
     </header>
 
     <main>
-      <section class="about" id="about">
+      <section class="metrics" id="metrics" data-parallax>
+        <div class="metrics-grid">
+          <article class="metric-card">
+            <span class="metric-label">Пациентов под наблюдением</span>
+            <span class="metric-value" data-counter="4800">0</span>
+          </article>
+          <article class="metric-card">
+            <span class="metric-label">Экспертов в команде</span>
+            <span class="metric-value" data-counter="42">0</span>
+          </article>
+          <article class="metric-card">
+            <span class="metric-label">Уровень удовлетворённости</span>
+            <span class="metric-value" data-counter="98" data-suffix="%">0%</span>
+          </article>
+        </div>
+      </section>
+
+      <section class="about" id="about" data-parallax>
         <div class="section-header">
           <span class="section-badge">О клинике</span>
           <h2>Семейная медицина с тёплым отношением</h2>
@@ -125,7 +178,7 @@
         </div>
       </section>
 
-      <section class="services" id="services">
+      <section class="services" id="services" data-parallax>
         <div class="section-header light">
           <span class="section-badge">Направления</span>
           <h2>Здоровье для каждого члена семьи</h2>
@@ -181,7 +234,7 @@
         </div>
       </section>
 
-      <section class="experts" id="experts">
+      <section class="experts" id="experts" data-parallax>
         <div class="section-header">
           <span class="section-badge">Команда</span>
           <h2>Врачи, которым доверяют семьи Казани</h2>
@@ -222,7 +275,7 @@
         </div>
       </section>
 
-      <section class="technology" id="programs">
+      <section class="technology" id="programs" data-parallax>
         <div class="section-header light">
           <span class="section-badge">Программы</span>
           <h2>Комплексные семейные пакеты</h2>
@@ -281,7 +334,7 @@
         </div>
       </section>
 
-      <section class="reviews" id="reviews">
+      <section class="reviews" id="reviews" data-parallax>
         <div class="section-header">
           <span class="section-badge">Отзывы</span>
           <h2>Истории пациентов</h2>
@@ -320,7 +373,7 @@
         </div>
       </section>
 
-      <section class="booking" id="feedback">
+      <section class="booking" id="feedback" data-parallax>
         <div class="booking-content">
           <div class="section-header">
             <span class="section-badge">Обратная связь</span>
@@ -358,7 +411,7 @@
               <label for="message">Сообщение</label>
               <textarea id="message" name="message" rows="4" placeholder="Опишите вопрос или желаемое время визита"></textarea>
             </div>
-            <button type="submit" class="btn primary">Отправить заявку</button>
+            <button type="submit" class="btn primary magnetic">Отправить заявку</button>
             <p class="form-note">Нажимая кнопку, вы соглашаетесь с политикой конфиденциальности и обработкой персональных данных.</p>
           </form>
           <div class="form-toast" role="status" aria-live="polite">
@@ -367,7 +420,7 @@
         </div>
       </section>
 
-      <section class="contacts" id="contacts">
+      <section class="contacts" id="contacts" data-parallax>
         <div class="section-header">
           <span class="section-badge">Контакты</span>
           <h2>Мы рядом с вами в Казани</h2>

@@ -28,6 +28,27 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: rgba(5, 20, 47, 0.12);
+  z-index: 20;
+  overflow: hidden;
+}
+
+.scroll-progress .progress-bar {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, #53d7ff 0%, #3f82ff 50%, #52f0c9 100%);
+  transform-origin: left;
+  transform: scaleX(0);
+  transition: transform 0.2s ease-out;
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -62,6 +83,7 @@ img {
   gap: 28px;
   z-index: 10;
   box-shadow: 0 25px 45px rgba(5, 20, 47, 0.24);
+  overflow: hidden;
 }
 
 .navbar .logo {
@@ -73,6 +95,15 @@ img {
   white-space: nowrap;
 }
 
+.nav-snake {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  opacity: 0.85;
+  filter: drop-shadow(0 0 12px rgba(80, 220, 255, 0.35));
+}
+
 .nav-links {
   display: flex;
   gap: 14px;
@@ -80,6 +111,8 @@ img {
   margin-left: auto;
   flex-wrap: nowrap;
   justify-content: flex-end;
+  position: relative;
+  z-index: 1;
 }
 
 .nav-links a {
@@ -197,6 +230,7 @@ img {
   color: var(--text-light);
   display: flex;
   align-items: center;
+  overflow: hidden;
 }
 
 .hero-overlay {
@@ -206,11 +240,215 @@ img {
   z-index: 0;
 }
 
+.hero-visuals {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: end;
+  justify-items: end;
+  padding: clamp(120px, 18vw, 180px) 5% 120px;
+  z-index: 1;
+}
+
+.hero-procedure {
+  width: min(420px, 42vw);
+  max-width: 480px;
+  background: linear-gradient(145deg, rgba(14, 45, 95, 0.75), rgba(12, 56, 122, 0.45));
+  border-radius: 32px;
+  padding: clamp(22px, 2.6vw, 28px);
+  box-shadow: 0 35px 70px rgba(5, 20, 47, 0.35);
+  border: 1px solid rgba(120, 170, 255, 0.25);
+  backdrop-filter: blur(12px);
+}
+
+.hero-procedure svg {
+  width: 100%;
+  height: auto;
+}
+
+.hero-procedure .bed {
+  fill: url(#bedGradient);
+  opacity: 0.95;
+}
+
+.hero-procedure .bed-shadow {
+  fill: rgba(10, 30, 68, 0.55);
+}
+
+.hero-procedure .patient {
+  transform-origin: center;
+  animation: patient-relax 3.2s ease-in-out infinite;
+}
+
+.hero-procedure .torso,
+.hero-procedure .legs {
+  fill: rgba(118, 191, 255, 0.95);
+}
+
+.hero-procedure .pillow {
+  fill: rgba(255, 255, 255, 0.9);
+}
+
+.hero-procedure .head {
+  fill: rgba(236, 247, 255, 0.95);
+}
+
+.hero-procedure .arm {
+  fill: none;
+  stroke: rgba(220, 238, 255, 0.95);
+  stroke-width: 10;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.hero-procedure .monitor-body {
+  fill: rgba(14, 56, 110, 0.85);
+  stroke: rgba(120, 180, 255, 0.4);
+  stroke-width: 2;
+}
+
+.hero-procedure .monitor-line {
+  fill: none;
+  stroke: rgba(82, 255, 209, 0.95);
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 4 12;
+  animation: monitor-pulse 2.4s ease-in-out infinite;
+}
+
+.hero-procedure .monitor-stand {
+  fill: rgba(14, 45, 95, 0.85);
+}
+
+.floating-symbols {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: clamp(80px, 12vw, 140px) 12%;
+  z-index: -1;
+}
+
+.floating-symbols .symbol {
+  width: clamp(48px, 5vw, 72px);
+  height: clamp(48px, 5vw, 72px);
+  border-radius: 24px;
+  filter: blur(0.2px);
+  opacity: 0.7;
+  position: relative;
+  animation: float-soft 9s ease-in-out infinite;
+  background: radial-gradient(circle at 30% 30%, rgba(160, 220, 255, 0.95), rgba(63, 130, 255, 0.45));
+  box-shadow: 0 20px 40px rgba(5, 20, 47, 0.25);
+}
+
+.floating-symbols .symbol::after {
+  content: "";
+  position: absolute;
+  inset: 12px;
+  border-radius: 18px;
+  background: var(--symbol-graphic, rgba(240, 248, 255, 0.85));
+  background-size: cover;
+  background-position: center;
+  opacity: 0.9;
+}
+
+.floating-symbols .symbol.cross {
+  --symbol-graphic: linear-gradient(90deg, transparent 36%, rgba(7, 36, 78, 0.9) 36%, rgba(7, 36, 78, 0.9) 64%, transparent 64%),
+    linear-gradient(0deg, transparent 36%, rgba(7, 36, 78, 0.9) 36%, rgba(7, 36, 78, 0.9) 64%, transparent 64%);
+  animation-delay: -1.5s;
+}
+
+.floating-symbols .symbol.drop {
+  --symbol-graphic: radial-gradient(circle at 50% 20%, rgba(7, 36, 78, 0.95) 0 45%, transparent 46%),
+    linear-gradient(140deg, transparent 42%, rgba(7, 36, 78, 0.9) 43%, rgba(7, 36, 78, 0.9) 60%, transparent 61%),
+    radial-gradient(circle at 50% 78%, rgba(7, 36, 78, 0.9) 0 18%, transparent 19%);
+  animation-delay: -3.4s;
+}
+
+.floating-symbols .symbol.dna {
+  --symbol-graphic: linear-gradient(90deg, transparent 30%, rgba(7, 36, 78, 0.9) 30% 36%, transparent 36% 64%, rgba(7, 36, 78, 0.9) 64% 70%, transparent 70%),
+    linear-gradient(45deg, transparent 45%, rgba(7, 36, 78, 0.9) 45% 55%, transparent 55%),
+    linear-gradient(-45deg, transparent 45%, rgba(7, 36, 78, 0.9) 45% 55%, transparent 55%);
+  animation-delay: -5.1s;
+}
+
+.floating-symbols .symbol.pulse {
+  --symbol-graphic: linear-gradient(90deg, transparent 22%, rgba(7, 36, 78, 0.9) 22% 32%, transparent 32% 68%, rgba(7, 36, 78, 0.9) 68% 78%, transparent 78%),
+    linear-gradient(0deg, transparent 0 48%, rgba(7, 36, 78, 0.9) 48% 52%, transparent 52%);
+  animation-delay: -2.6s;
+}
+
 .hero-content {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   max-width: 640px;
   animation: float-in 0.8s ease 0.2s both;
+}
+
+[data-parallax] > * {
+  position: relative;
+  z-index: 1;
+}
+
+.metrics {
+  padding: 160px 5% 100px;
+  background: linear-gradient(160deg, rgba(11, 33, 70, 0.92), rgba(30, 83, 166, 0.75));
+  color: var(--text-light);
+}
+
+.metrics-grid {
+  display: grid;
+  gap: 32px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  max-width: 980px;
+  margin: 0 auto;
+}
+
+.metric-card {
+  position: relative;
+  padding: 32px;
+  border-radius: 24px;
+  background: rgba(18, 46, 96, 0.75);
+  border: 1px solid rgba(136, 188, 255, 0.28);
+  box-shadow: 0 25px 45px rgba(5, 20, 47, 0.35);
+  overflow: hidden;
+}
+
+.metric-card::after {
+  content: "";
+  position: absolute;
+  inset: -80% -60%;
+  background: radial-gradient(circle at center, rgba(112, 198, 255, 0.32), rgba(112, 198, 255, 0));
+  animation: metric-orbit 12s linear infinite;
+  opacity: 0.75;
+}
+
+.metric-label {
+  display: block;
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(224, 236, 255, 0.75);
+  margin-bottom: 18px;
+}
+
+.metric-value {
+  font-family: "Playfair Display", serif;
+  font-size: clamp(2.1rem, 4vw, 3.1rem);
+  font-weight: 700;
+  color: #fff;
+}
+
+.metric-card:nth-child(2)::after {
+  animation-delay: -3s;
+}
+
+.metric-card:nth-child(3)::after {
+  animation-delay: -6s;
 }
 
 @keyframes float-in {
@@ -221,6 +459,45 @@ img {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes patient-relax {
+  0% {
+    transform: translateY(-6px) rotate(-1deg);
+  }
+  30% {
+    transform: translate(0, 0) rotate(0);
+  }
+  55% {
+    transform: translateY(-3px) rotate(0.6deg);
+  }
+  100% {
+    transform: translateY(-6px) rotate(-1deg);
+  }
+}
+
+@keyframes monitor-pulse {
+  0% {
+    stroke-dashoffset: 0;
+  }
+  45% {
+    stroke-dashoffset: -48;
+  }
+  100% {
+    stroke-dashoffset: -96;
+  }
+}
+
+@keyframes float-soft {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  45% {
+    transform: translate3d(-12px, -18px, 0);
+  }
+  100% {
+    transform: translate3d(8px, 12px, 0);
   }
 }
 
@@ -264,7 +541,21 @@ img {
   font-weight: 600;
   letter-spacing: 0.02em;
   cursor: pointer;
-  transition: var(--transition);
+  position: relative;
+  z-index: 1;
+  --magnet-x: 0px;
+  --magnet-y: 0px;
+  --hover-lift: 0px;
+  transition: transform 0.18s ease, box-shadow var(--transition), background var(--transition), color var(--transition);
+  transform: translate3d(
+    var(--magnet-x),
+    calc(var(--magnet-y) + var(--hover-lift)),
+    0
+  );
+}
+
+.btn.magnetic {
+  will-change: transform;
 }
 
 .btn.primary {
@@ -276,7 +567,7 @@ img {
 .btn.primary:hover,
 .btn.primary:focus {
   background: var(--accent-dark);
-  transform: translateY(-2px);
+  --hover-lift: -2px;
 }
 
 .btn.secondary {
@@ -287,12 +578,42 @@ img {
 .btn.secondary:hover,
 .btn.secondary:focus {
   background: rgba(245, 248, 255, 0.18);
+  --hover-lift: -2px;
 }
 
 main section {
   padding: 110px 5% 120px;
   position: relative;
   overflow: hidden;
+}
+
+[data-parallax] {
+  --parallax-offset: 0;
+}
+
+[data-parallax]::before {
+  content: "";
+  position: absolute;
+  inset: -35% -45%;
+  background: radial-gradient(circle at center, rgba(82, 144, 255, 0.12) 0%, rgba(47, 78, 140, 0.08) 45%, rgba(5, 20, 47, 0) 70%);
+  transform: translate3d(0, calc(var(--parallax-offset) * -36px), 0);
+  transition: transform 0.4s ease-out;
+  pointer-events: none;
+  z-index: 0;
+}
+
+[data-parallax] > * {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes metric-orbit {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .section-header {
@@ -365,19 +686,52 @@ main section {
   cursor: pointer;
   position: relative;
   outline: none;
+  transform-style: preserve-3d;
+  --tilt-x: 0deg;
+  --tilt-y: 0deg;
+  --lift: 0px;
+  transform: perspective(900px) rotateX(calc(var(--tilt-x, 0deg)))
+    rotateY(calc(var(--tilt-y, 0deg))) translate3d(0, var(--lift), 0);
 }
 
 .about-card:focus-visible,
 .technology-card:focus-visible {
   box-shadow: 0 32px 65px rgba(5, 20, 47, 0.28);
-  transform: translateY(-8px);
   border-color: rgba(63, 130, 255, 0.55);
+  --lift: -8px;
+}
+
+.about-card::after,
+.technology-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    circle at var(--pointer-x, 50%) var(--pointer-y, 50%),
+    rgba(82, 180, 255, 0.28),
+    rgba(82, 180, 255, 0)
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+.about-card:hover::after,
+.about-card:focus-visible::after,
+.technology-card:hover::after,
+.technology-card:focus-visible::after {
+  opacity: 1;
 }
 
 .about-card:hover,
-.service-card:hover,
-.expert-card:hover,
 .technology-card:hover {
+  --lift: -10px;
+}
+
+.service-card:hover,
+.expert-card:hover {
   transform: translateY(-6px);
   box-shadow: 0 28px 55px rgba(5, 20, 47, 0.2);
 }
@@ -945,6 +1299,38 @@ body.modal-open {
     padding: 14px 22px;
   }
 
+  .hero {
+    flex-direction: column;
+    text-align: center;
+    padding-bottom: 80px;
+  }
+
+  .hero-content {
+    align-items: center;
+  }
+
+  .hero-actions {
+    justify-content: center;
+  }
+
+  .hero-visuals {
+    position: relative;
+    padding: 40px 0 0;
+    justify-items: center;
+  }
+
+  .hero-procedure {
+    width: min(340px, 76vw);
+  }
+
+  .floating-symbols {
+    display: none;
+  }
+
+  .metrics {
+    padding: 120px 5% 80px;
+  }
+
   .detail-overlay {
     padding: 28px 18px;
   }
@@ -1030,6 +1416,18 @@ body.modal-open {
 @media (max-width: 640px) {
   .hero {
     padding: 160px 24px 100px;
+  }
+
+  .hero-visuals {
+    display: none;
+  }
+
+  .metrics {
+    padding: 100px 24px 70px;
+  }
+
+  .metric-card {
+    padding: 26px;
   }
 
   main section {
